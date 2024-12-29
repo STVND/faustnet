@@ -40,6 +40,9 @@ To create an http server you can run
 faustnet httpserv run
 ```
 
+This is currently hardcoded to port :8080 and will ping ipify.org to retrieve your public IP Address. This should make it relatively easy to share text files with users outside your network.
+After that it will refresh server uptime every 10 seconds and can closed by pressing <Ctrl+^c>
+
 For any updates that might happen, I think it would be nice to implement some sort of websocket support. I know that Gorilla is widely used but it would be interesting to learn how to handle that without a prebuilt solution.
 
 I am still new to Go and would like feedback if you're able to provide it
