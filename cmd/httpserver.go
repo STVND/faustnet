@@ -19,7 +19,7 @@ import (
 
 var serverCmd = &cobra.Command{
 	Use:   "httpserv",
-	Short: "Manage a simple http server",
+	Short: "Manage a simple website to host your files",
 
 	Run: func(cmd *cobra.Command, args []string) {
 
@@ -127,8 +127,6 @@ var serverCmd = &cobra.Command{
 
 		})
 
-		//shoutout to denji on github for having an example I could reference
-
 		cer, err := tls.LoadX509KeyPair("server.crt", "server.key")
 		if err != nil {
 			fmt.Println("Error creating tls: ", err)
@@ -189,6 +187,9 @@ var serverCmd = &cobra.Command{
 }
 
 func checkBearer(r *http.Request, br string) bool {
+	//naive way to do a bearer check
+	//but for the scope of this project it should be secure *enough*
+
 	getReqBearer := r.Header.Get("Authorization")
 
 	return getReqBearer == br
@@ -197,7 +198,7 @@ func checkBearer(r *http.Request, br string) bool {
 
 func init() {
 	rootCmd.AddCommand(serverCmd)
-	// Here you will define your flags and configuration settings.
+	//naive assignment of bearer token but this is a small project
 	serverCmd.Flags().StringP("bearer", "b", "", "Set a fixed bearer token for user access")
 	serverCmd.Flags().StringP("port", "p", "8080", "Specify port number to use")
 }

@@ -1,6 +1,8 @@
 faustnet is a cli program that can perform GET, POST, and DELETE requests as a Client
 Can also start a simple HTTP server(still in progress) and can serve text files to clients(i.e. other faustnet instances)
 
+# Currently adding web interfaces to increase functionality
+## A rewrite of primary logic will be coming soonish to make FaustNET more functional
 
 To install faustnet as a CLI command use the following command from within the project directory
 ```
