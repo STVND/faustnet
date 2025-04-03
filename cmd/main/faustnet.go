@@ -64,7 +64,6 @@ func initConfig(dir string) {
 	viper.AddConfigPath(dir + "/config")
 
 	viper.SetDefault("FaustDir", dir)
-	viper.SetDefault("ExportSubDir", "received")
 	viper.SetDefault("ServerSubDir", "server")
 	viper.SetDefault("ConfigSubDir", "config")
 	viper.SetDefault("LogSubDir", "log")

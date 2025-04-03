@@ -6,7 +6,6 @@ package cmd
 import (
 	"crypto/tls"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 	"os"
@@ -42,10 +41,7 @@ var serverCmd = &cobra.Command{
 
 		mux := http.NewServeMux()
 		mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-			allowed := true
-			if bearer != "" {
-				allowed = checkBearer(r, bearer)
-			}
+			allowed := checkBearer(r, bearer)
 
 			if allowed {
 
@@ -63,70 +59,6 @@ var serverCmd = &cobra.Command{
 			}
 		})
 
-		mux.HandleFunc("GET /{filename}", func(w http.ResponseWriter, r *http.Request) {
-			allowed := true
-			if bearer != "" {
-				allowed = checkBearer(r, bearer)
-			}
-
-			if allowed {
-				filename := r.PathValue("filename")
-				if _, err := os.Stat(serverpath + "/" + filename); err != nil {
-					fmt.Fprintf(w, "Error accessing content: %s", err)
-				} else {
-					body, _ := os.ReadFile(serverpath + "/" + filename)
-					contentType := http.DetectContentType(body)
-					w.Header().Add("Content-Type", contentType)
-					fmt.Fprint(w, string(body))
-				}
-
-			} else {
-				http.Error(w, "Unauthorized", http.StatusUnauthorized)
-			}
-
-		})
-
-		mux.HandleFunc("POST /{filename}", func(w http.ResponseWriter, r *http.Request) {
-			allowed := true
-			if bearer != "" {
-				allowed = checkBearer(r, bearer)
-			}
-
-			if allowed {
-				filename := r.PathValue("filename")
-
-				newValue, _ := io.ReadAll(r.Body)
-				os.WriteFile((serverpath + "/" + filename), newValue, 0644)
-				fmt.Fprint(w, "Resource created successfully\n", http.StatusCreated)
-
-			} else {
-				http.Error(w, "Unauthorized", http.StatusUnauthorized)
-			}
-
-		})
-
-		mux.HandleFunc("DELETE /{filename}", func(w http.ResponseWriter, r *http.Request) {
-			allowed := true
-			if bearer != "" {
-				allowed = checkBearer(r, bearer)
-			}
-
-			if allowed {
-				filename := r.PathValue("filename")
-				err := os.Remove(serverpath + "/" + filename)
-
-				if err != nil {
-					http.Error(w, "Unable to delete file", http.StatusNotFound)
-				} else {
-					fmt.Fprint(w, "Request successful", http.StatusNoContent)
-				}
-
-			} else {
-				http.Error(w, "Unauthorized", http.StatusUnauthorized)
-			}
-
-		})
-
 		cer, err := tls.LoadX509KeyPair("server.crt", "server.key")
 		if err != nil {
 			fmt.Println("Error creating tls: ", err)
@@ -142,21 +74,6 @@ var serverCmd = &cobra.Command{
 		go func() {
 			fmt.Println("Starting server")
 
-			resp, err := http.Get("https://api.ipify.org?format=text")
-
-			if err != nil {
-				fmt.Println("Unable to get public ip address")
-			}
-
-			defer resp.Body.Close()
-
-			val, err := io.ReadAll(resp.Body)
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			fmt.Println("Public IP:\t", string(val))
-			fmt.Println("Hosting server on: " + server.Addr)
 			if err := server.ListenAndServe(); err != http.ErrServerClosed {
 				fmt.Println("Error starting server:", err)
 			}

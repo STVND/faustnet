@@ -1,8 +1,7 @@
 <template>
     <div id="navbar">
         <ul>
-            <li id="home-link"><RouterLink to="/">Home</RouterLink></li>
-            <li id="about-link"><RouterLink to="/about">About</RouterLink></li>
+            <li>FaustNET</li>
         </ul>
     </div>
 </template>
@@ -12,10 +11,13 @@
 </script>
 
 <style scoped> 
+
 ul {
     display: flex;
     list-style: none;
-    justify-content: space-evenly;
+    justify-content: center;
+    letter-spacing: 50%;
+    
 }
 
 li {
@@ -24,9 +26,6 @@ li {
     padding-right: 3px;
     margin-left: 5px;
     margin-right: 5px;
-    outline: double;
-    outline-color: #789978a0;
-    border-radius: 10px;
 }
 
 #navbar {
